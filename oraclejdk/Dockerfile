@@ -1,0 +1,21 @@
+FROM nhantran/utility:1.0
+MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
+
+WORKDIR /opt
+
+# Use Oracle JDK 6 as default java for running Jenkins and also as an option of Jenkins builds
+RUN wget http://172.17.42.1/3rdparty/java/jdk-6u45-linux-x64.bin
+RUN chmod u+x jdk-6u45-linux-x64.bin
+RUN ./jdk-6u45-linux-x64.bin
+RUN rm -f jdk-6u45-linux-x64.bin
+RUN update-alternatives --install "/usr/bin/java" "java" "/opt/jdk1.6.0_45/jre/bin/java" 1
+RUN update-alternatives --install "/usr/bin/javac" "javac" "/opt/jdk1.6.0_45/bin/javac" 1
+RUN update-alternatives --install "/usr/bin/javaws" "javaws" "/opt/jdk1.6.0_45/bin/javaws" 1
+RUN update-alternatives --set java /opt/jdk1.6.0_45/jre/bin/java
+RUN update-alternatives --set javac /opt/jdk1.6.0_45/bin/javac
+RUN update-alternatives --set javaws /opt/jdk1.6.0_45/bin/javaws
+
+# Use Oracle JDK as an option of Jenkins builds
+RUN wget http://172.17.42.1/3rdparty/java/jdk-7u60-linux-x64.tar.gz
+RUN tar xvf jdk-7u60-linux-x64.tar.gz
+RUN rm -f jdk-7u60-linux-x64.tar.gz

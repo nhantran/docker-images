@@ -1,0 +1,19 @@
+FROM nhantran/oraclejdk:1.0
+MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
+
+WORKDIR /opt
+
+# Download and install Artifactory 3.2.2
+RUN wget http://172.17.42.1/3rdparty/artifactory/artifactory-3.2.2.zip
+RUN unzip artifactory-3.2.2.zip
+RUN rm -f artifactory-3.2.2.zip
+
+ENV JAVA_HOME /opt/jdk1.7.0_60
+
+EXPOSE 8081
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:artifactory]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/opt/artifactory-3.2.2/bin/artifactory.sh" >> /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]

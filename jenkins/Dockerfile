@@ -1,0 +1,76 @@
+FROM nhantran/oraclejdk:1.0
+MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
+
+# Download and install Jenkins 1.549
+RUN wget http://172.17.42.1/3rdparty/jenkins/1.549/jenkins.war
+RUN chmod 644 /opt/jenkins.war
+RUN useradd -m jenkins
+
+# Configure Jenkins
+WORKDIR /home/jenkins
+
+# Create .jenkins folder for Jenkins to host generated configs and data.
+RUN mkdir .jenkins
+
+ADD templates/config.xml /home/jenkins/.jenkins/config.xml
+ADD templates/hudson.tasks.Maven.xml /home/jenkins/.jenkins/hudson.tasks.Maven.xml
+
+RUN mkdir .jenkins/plugins
+
+# Uncomment to enable Authentication via Active Directory
+#ADD templates/plugins/active-directory.jpi /home/jenkins/.jenkins/plugins/active-directory.jpi
+#ADD templates/jenkins.security.QueueItemAuthenticatorConfiguration.xml /home/jenkins/.jenkins/jenkins.security.QueueItemAuthenticatorConfiguration.xml
+
+# Install Git Plugin - Require git-client and scm-api to work
+ADD templates/plugins/git-client.jpi /home/jenkins/.jenkins/plugins/git-client.jpi
+ADD templates/plugins/scm-api.jpi /home/jenkins/.jenkins/plugins/scm-api.jpi
+ADD templates/plugins/git.jpi /home/jenkins/.jenkins/plugins/git.jpi
+ADD templates/hudson.plugins.git.GitTool.xml /home/jenkins/.jenkins/hudson.plugins.git.GitTool.xml
+
+# Install Artifactory plugin
+ADD templates/plugins/artifactory.jpi /home/jenkins/.jenkins/plugins/artifactory.jpi
+ADD templates/org.jfrog.hudson.ArtifactoryBuilder.xml /home/jenkins/.jenkins/org.jfrog.hudson.ArtifactoryBuilder.xml
+
+# Install Sonar Plugin
+ADD templates/plugins/sonar.jpi /home/jenkins/.jenkins/plugins/sonar.jpi
+ADD templates/sonar.xml /home/jenkins/.jenkins/sonar.xml
+ADD templates/hudson.plugins.sonar.SonarPublisher.xml /home/jenkins/.jenkins/hudson.plugins.sonar.SonarPublisher.xml
+ADD templates/hudson.plugins.sonar.SonarRunnerInstallation.xml /home/jenkins/.jenkins/hudson.plugins.sonar.SonarRunnerInstallation.xml
+
+RUN chown -R jenkins:jenkins .jenkins/
+
+# Download and install Maven versions for Jenkins
+WORKDIR /opt
+
+# Download and install Maven 3.1.1
+RUN wget http://172.17.42.1/3rdparty/maven/apache-maven-3.1.1-bin.zip
+RUN unzip apache-maven-3.1.1-bin.zip
+RUN rm -f apache-maven-3.1.1-bin.zip
+RUN chown -R jenkins:jenkins apache-maven-3.1.1
+
+# Download and install Maven 3.0.5
+RUN wget http://172.17.42.1/3rdparty/maven/apache-maven-3.0.5-bin.zip
+RUN unzip apache-maven-3.0.5-bin.zip
+RUN rm -f apache-maven-3.0.5-bin.zip
+RUN chown -R jenkins:jenkins apache-maven-3.0.5
+
+# Download and install Maven 2.2.1
+RUN wget http://172.17.42.1/3rdparty/maven/apache-maven-2.2.1-bin.zip
+RUN unzip apache-maven-2.2.1-bin.zip
+RUN rm -f apache-maven-2.2.1-bin.zip
+RUN chown -R jenkins:jenkins apache-maven-2.2.1
+
+# Download and install Maven 2.0.9
+RUN wget http://172.17.42.1/3rdparty/maven/apache-maven-2.0.9-bin.zip
+RUN unzip apache-maven-2.0.9-bin.zip
+RUN rm -f apache-maven-2.0.9-bin.zip
+RUN chown -R jenkins:jenkins apache-maven-2.0.9
+
+EXPOSE 8080
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:jenkins]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "user=jenkins" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=java -jar /opt/jenkins.war" >> /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]

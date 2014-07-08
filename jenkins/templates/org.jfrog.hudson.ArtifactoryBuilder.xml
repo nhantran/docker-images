@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<org.jfrog.hudson.ArtifactoryBuilder_-DescriptorImpl plugin="artifactory@2.2.3">
+  <artifactoryServers>
+    <org.jfrog.hudson.ArtifactoryServer>
+      <timeout>300</timeout>
+      <url>http://${ARTIFACTORY_PORT_8081_TCP_ADDR}:${ARTIFACTORY_PORT_8081_TCP_PORT}/artifactory</url>
+      <id>artifactory@kms</id>
+      <deployerCredentials>
+        <username>jenkins</username>
+        <password>e6417f0a289d11e555048cf0883208b7</password>
+      </deployerCredentials>
+      <bypassProxy>false</bypassProxy>
+    </org.jfrog.hudson.ArtifactoryServer>
+  </artifactoryServers>
+</org.jfrog.hudson.ArtifactoryBuilder_-DescriptorImpl>
