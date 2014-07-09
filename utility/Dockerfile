@@ -1,5 +1,5 @@
 FROM ubuntu
-MAINTAINER Nhan Tran <nhantran@kms-technology.com>
+MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 RUN apt-get update
 
