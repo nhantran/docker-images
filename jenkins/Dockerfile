@@ -68,9 +68,13 @@ RUN chown -R jenkins:jenkins apache-maven-2.0.9
 
 EXPOSE 8080
 
+ADD templates/startJenkins.sh /home/jenkins/startJenkins.sh
+RUN chown -R jenkins:jenkins /home/jenkins/startJenkins.sh
+RUN chmod u+x /home/jenkins/startJenkins.sh
+
 RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo "[program:jenkins]" >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo "user=jenkins" >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo "command=java -jar /opt/jenkins.war" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/home/jenkins/startJenkins.sh" >> /etc/supervisor/conf.d/supervisord.conf
 
 CMD ["/usr/bin/supervisord"]

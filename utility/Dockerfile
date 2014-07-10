@@ -11,7 +11,7 @@ RUN apt-get install -y supervisor
 RUN apt-get install -y inetutils-ping
 
 RUN mkdir -p /var/run/sshd
-RUN echo 'root:Passw0rd' | chpasswd
+RUN echo 'root:Passw0rd' |chpasswd
 
 RUN mkdir -p /var/log/supervisor
 
