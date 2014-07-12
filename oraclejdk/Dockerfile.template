@@ -1,10 +1,10 @@
-FROM nhantran/utility:1.0
+FROM nhantran/utility:{{VERSION}}
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 WORKDIR /opt
 
 # Use Oracle JDK 6 as default java for running Jenkins and also as an option of Jenkins builds
-RUN wget http://172.17.42.1/3rdparty/java/jdk-6u45-linux-x64.bin
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/java/jdk-6u45-linux-x64.bin
 RUN chmod u+x jdk-6u45-linux-x64.bin
 RUN ./jdk-6u45-linux-x64.bin
 RUN rm -f jdk-6u45-linux-x64.bin
