@@ -1,10 +1,10 @@
-FROM nhantran/oraclejdk:1.0
+FROM nhantran/oraclejdk:{{VERSION}}
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 WORKDIR /opt
 
 # Download and install Artifactory 3.2.2
-RUN wget http://172.17.42.1/3rdparty/artifactory/artifactory-3.2.2.zip
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/artifactory/artifactory-3.2.2.zip
 RUN unzip artifactory-3.2.2.zip
 RUN rm -f artifactory-3.2.2.zip
 

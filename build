@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#
+# Usage: build <image name> <version> <software repository ip>
+#
+
+sed -r -e "s/{{VERSION}}/$2/g" $1/Dockerfile.template > $1/Dockerfile.1
+sed -r -e "s/{{SOFT_REPO_IP}}/$3/g" $1/Dockerfile.1 > $1/Dockerfile
+docker build -t nhantran/$1:$2 $1/
+rm -f $1/Dockerfile.1
+rm -f $1/Dockerfile

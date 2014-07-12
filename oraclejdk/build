@@ -1,7 +1,0 @@
-#!/bin/bash
-
-sed -r -e "s/{{VERSION}}/$1/g" Dockerfile.template > Dockerfile
-sed -r -e "s/{{SOFT_REPO_IP}}/$2/g" Dockerfile
-docker build -t nhantran/utility:$1 .
-rm -f Dockerfile
-

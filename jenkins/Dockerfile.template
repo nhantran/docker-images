@@ -1,8 +1,8 @@
-FROM nhantran/oraclejdk:1.0
+FROM nhantran/oraclejdk:{{VERSION}}
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 # Download and install Jenkins 1.549
-RUN wget http://172.17.42.1/3rdparty/jenkins/1.549/jenkins.war
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/1.549/jenkins.war
 RUN chmod 644 /opt/jenkins.war
 RUN useradd -m jenkins
 
@@ -43,25 +43,25 @@ RUN chown -R jenkins:jenkins .jenkins/
 WORKDIR /opt
 
 # Download and install Maven 3.1.1
-RUN wget http://172.17.42.1/3rdparty/maven/apache-maven-3.1.1-bin.zip
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/maven/apache-maven-3.1.1-bin.zip
 RUN unzip apache-maven-3.1.1-bin.zip
 RUN rm -f apache-maven-3.1.1-bin.zip
 RUN chown -R jenkins:jenkins apache-maven-3.1.1
 
 # Download and install Maven 3.0.5
-RUN wget http://172.17.42.1/3rdparty/maven/apache-maven-3.0.5-bin.zip
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/maven/apache-maven-3.0.5-bin.zip
 RUN unzip apache-maven-3.0.5-bin.zip
 RUN rm -f apache-maven-3.0.5-bin.zip
 RUN chown -R jenkins:jenkins apache-maven-3.0.5
 
 # Download and install Maven 2.2.1
-RUN wget http://172.17.42.1/3rdparty/maven/apache-maven-2.2.1-bin.zip
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/maven/apache-maven-2.2.1-bin.zip
 RUN unzip apache-maven-2.2.1-bin.zip
 RUN rm -f apache-maven-2.2.1-bin.zip
 RUN chown -R jenkins:jenkins apache-maven-2.2.1
 
 # Download and install Maven 2.0.9
-RUN wget http://172.17.42.1/3rdparty/maven/apache-maven-2.0.9-bin.zip
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/maven/apache-maven-2.0.9-bin.zip
 RUN unzip apache-maven-2.0.9-bin.zip
 RUN rm -f apache-maven-2.0.9-bin.zip
 RUN chown -R jenkins:jenkins apache-maven-2.0.9

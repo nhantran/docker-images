@@ -16,6 +16,6 @@ RUN update-alternatives --set javac /opt/jdk1.6.0_45/bin/javac
 RUN update-alternatives --set javaws /opt/jdk1.6.0_45/bin/javaws
 
 # Use Oracle JDK as an option of Jenkins builds
-RUN wget http://172.17.42.1/3rdparty/java/jdk-7u60-linux-x64.tar.gz
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/java/jdk-7u60-linux-x64.tar.gz
 RUN tar xvf jdk-7u60-linux-x64.tar.gz
 RUN rm -f jdk-7u60-linux-x64.tar.gz
