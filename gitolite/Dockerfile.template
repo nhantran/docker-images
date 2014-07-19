@@ -19,6 +19,10 @@ RUN gitolite/install -to /home/git/bin
 ENV USER git
 ENV HOME /home/git
 RUN /home/git/bin/gitolite setup -pk /home/git/admin.pub
+RUN sed -i 's|# LOCAL_CODE                =>  "$ENV{HOME}/local"|LOCAL_CODE                =>  "$ENV{HOME}/.gitolite/local-code"|g' /home/git/.gitolite.rc
+RUN sed -i "s/# 'repo-specific-hooks'/'repo-specific-hooks'/g" /home/git/.gitolite.rc
+RUN sed -i "s/GIT_CONFIG_KEYS                 =>  ''/GIT_CONFIG_KEYS                 =>  '.*'/g" /home/git/.gitolite.rc
+RUN cat /home/git/.gitolite.rc
 
 USER root
 CMD ["/usr/bin/supervisord"]
