@@ -77,4 +77,8 @@ RUN echo "[program:jenkins]" >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo "user=jenkins" >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo "command=/home/jenkins/startJenkins.sh" >> /etc/supervisor/conf.d/supervisord.conf
 
+USER jenkins
+RUN ssh-keygen -t rsa -N "" -f /home/jenkins/.ssh/id_rsa
+
+USER root
 CMD ["/usr/bin/supervisord"]

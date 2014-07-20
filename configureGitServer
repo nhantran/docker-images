@@ -16,4 +16,7 @@ echo "\n" >> notify_jenkin
 echo "/usr/bin/curl 'http://$JENKINS_SERVER:8080/git/notifyCommit?url=ssh://git@$GIT_SERVER/$REPO_NAME'" >> notify_jenkin
 chmod u+x notify_jenkin
 cd ../../../
+scp root@$JENKINS_SERVER:/home/jenkins/.ssh/id_rsa.pub keydir/jenkins.pub
 git add . && git commit -m 'Configured repo $REPO_NAME' && git push
+
+#curl -X POST "http://$JENKINS_SERVER:8080/createItem?name=build_$REPO_NAME" --data-binary "@newconfig.xml" -H "Content-Type: text/xml"
