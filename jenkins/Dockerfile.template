@@ -81,4 +81,6 @@ USER jenkins
 RUN ssh-keygen -t rsa -N "" -f /home/jenkins/.ssh/id_rsa
 
 USER root
+RUN sed -i "s/#   StrictHostKeyChecking ask/    StrictHostKeyChecking no/g" /etc/ssh/ssh_config
+
 CMD ["/usr/bin/supervisord"]

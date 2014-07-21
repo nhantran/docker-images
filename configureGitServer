@@ -2,6 +2,7 @@
 REPO_NAME=$1
 GIT_SERVER=$(docker inspect cde_gitolite | grep IPAddress | cut -d'"' -f4)
 JENKINS_SERVER=$(docker inspect cde_jenkins | grep IPAddress | cut -d'"' -f4)
+
 git clone ssh://git@$GIT_SERVER/gitolite-admin
 
 echo "repo    $REPO_NAME" >> gitolite-admin/conf/gitolite.conf
@@ -18,5 +19,20 @@ chmod u+x notify_jenkin
 cd ../../../
 scp root@$JENKINS_SERVER:/home/jenkins/.ssh/id_rsa.pub keydir/jenkins.pub
 git add . && git commit -m 'Configured repo $REPO_NAME' && git push
+cd ../
+rm -fr gitolite-admin
 
-#curl -X POST "http://$JENKINS_SERVER:8080/createItem?name=build_$REPO_NAME" --data-binary "@newconfig.xml" -H "Content-Type: text/xml"
+sed -r -e "s/\{\{GIT_REPO_URL\}\}/ssh:\/\/git@$GIT_SERVER\/$REPO_NAME/g" configuration/config.xml.template > config.xml.1
+sed -r -e "s/\{\{GIT_BRANCH\}\}/\*\/master/g" config.xml.1 > config.xml.2
+sed -r -e "s/\{\{JDK_VERSION\}\}/Oracle JDK 6/g" config.xml.2 > config.xml.3
+sed -r -e "s/\{\{MAVEN_VERSION\}\}/Maven 3.1.1/g" config.xml.3 > config.xml.4
+sed -r -e "s/\{\{ARTIFACTORY_RELEASE_REPO_NAME\}\}/libs-release-local/g" config.xml.4 > config.xml.5
+sed -r -e "s/\{\{ARTIFACTORY_SNAPSHOT_REPO_NAME\}\}/libs-snapshot-local/g" config.xml.5 > config.xml
+
+curl -X POST "http://$JENKINS_SERVER:8080/createItem?name=build_$REPO_NAME" --data-binary "@config.xml" -H "Content-Type: text/xml"
+
+rm config.xml
+for i in {1..5}
+	do
+		rm config.xml.$i
+done
