@@ -2,11 +2,11 @@
 <hudson.plugins.sonar.SonarPublisher_-DescriptorImpl plugin="sonar@2.1">
   <installations>
     <hudson.plugins.sonar.SonarInstallation>
-      <name>Sonarqube 4.1.1</name>
+      <name>Sonarqube 4.1.2</name>
       <disabled>false</disabled>
-      <serverUrl>http://${SONARQUBE_PORT_9000_TCP_ADDR}:${SONARQUBE_PORT_9000_TCP_PORT}</serverUrl>
+      <serverUrl></serverUrl>
       <mojoVersion></mojoVersion>
-      <databaseUrl>jdbc:mysql://${DB_PORT_3306_TCP_ADDR}:${DB_PORT_3306_TCP_PORT}/sonar</databaseUrl>
+      <databaseUrl></databaseUrl>
       <databaseDriver>com.mysql.jdbc.Driver</databaseDriver>
       <databaseLogin>sonar</databaseLogin>
       <databasePassword>UGFzc3cwcmQ=</databasePassword>

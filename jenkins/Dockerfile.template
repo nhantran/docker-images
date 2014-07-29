@@ -1,4 +1,4 @@
-FROM nhantran/oraclejdk:{{VERSION}}
+FROM nhantran/oraclejdk
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 # Download and install Jenkins 1.549

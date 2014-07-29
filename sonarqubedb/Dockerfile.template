@@ -1,7 +1,6 @@
-FROM ubuntu
+FROM nhantran/utility
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
-# Install a fast downloader 
 RUN apt-get update
 
 # Install MySQL server
@@ -14,9 +13,13 @@ ADD create_database.sql /tmp/create_database.sql
 # Allow all hosts to access the database service
 RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
-# Start MySQL service, sleep 10s waiting for the service ready and execute the database script
+# Start MySQL service, sleep 10s waiting for the service ready and creating the 'sonar' database
 RUN /usr/bin/mysqld_safe & sleep 10s && mysql -u root -pPassw0rd < /tmp/create_database.sql
 
 EXPOSE 3306
 
-CMD ["mysqld_safe"]
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:mysqld_safe]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=mysqld_safe" >> /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]
