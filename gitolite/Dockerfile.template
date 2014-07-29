@@ -1,4 +1,4 @@
-FROM nhantran/utility:{{VERSION}}
+FROM nhantran/utility
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 RUN adduser --system --group --shell /bin/sh git

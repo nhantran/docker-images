@@ -16,27 +16,29 @@ ADD templates/config.xml /home/jenkins/.jenkins/config.xml
 ADD templates/hudson.tasks.Maven.xml /home/jenkins/.jenkins/hudson.tasks.Maven.xml
 
 RUN mkdir .jenkins/plugins
+WORKDIR /home/jenkins/.jenkins/plugins
 
 # Uncomment to enable Authentication via Active Directory
-#ADD templates/plugins/active-directory.jpi /home/jenkins/.jenkins/plugins/active-directory.jpi
+#RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/active-directory/1.38/active-directory.hpi
 #ADD templates/jenkins.security.QueueItemAuthenticatorConfiguration.xml /home/jenkins/.jenkins/jenkins.security.QueueItemAuthenticatorConfiguration.xml
 
 # Install Git Plugin - Require git-client and scm-api to work
-ADD templates/plugins/git-client.jpi /home/jenkins/.jenkins/plugins/git-client.jpi
-ADD templates/plugins/scm-api.jpi /home/jenkins/.jenkins/plugins/scm-api.jpi
-ADD templates/plugins/git.jpi /home/jenkins/.jenkins/plugins/git.jpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/git-client/1.10.0/git-client.hpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/scm-api/0.2/scm-api.hpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/git/2.2.2/git.hpi
 ADD templates/hudson.plugins.git.GitTool.xml /home/jenkins/.jenkins/hudson.plugins.git.GitTool.xml
 
 # Install Artifactory plugin
-ADD templates/plugins/artifactory.jpi /home/jenkins/.jenkins/plugins/artifactory.jpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/artifactory/2.2.3/artifactory.hpi
 ADD templates/org.jfrog.hudson.ArtifactoryBuilder.xml /home/jenkins/.jenkins/org.jfrog.hudson.ArtifactoryBuilder.xml
 
 # Install Sonar Plugin
-ADD templates/plugins/sonar.jpi /home/jenkins/.jenkins/plugins/sonar.jpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/sonar/2.1/sonar.hpi
 ADD templates/sonar.xml /home/jenkins/.jenkins/sonar.xml
 ADD templates/hudson.plugins.sonar.SonarPublisher.xml /home/jenkins/.jenkins/hudson.plugins.sonar.SonarPublisher.xml
 ADD templates/hudson.plugins.sonar.SonarRunnerInstallation.xml /home/jenkins/.jenkins/hudson.plugins.sonar.SonarRunnerInstallation.xml
 
+WORKDIR /home/jenkins
 RUN chown -R jenkins:jenkins .jenkins/
 
 # Download and install Maven versions for Jenkins
