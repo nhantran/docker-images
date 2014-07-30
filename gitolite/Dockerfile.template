@@ -6,12 +6,13 @@ RUN adduser --system --group --shell /bin/sh git
 #Fix the warning "perl: warning: Setting locale failed"
 RUN sed -i 's/^AcceptEnv LANG LC_\*$//g' /etc/ssh/sshd_config
 
-WORKDIR /home/git
-RUN touch /home/git/admin.pub
-RUN echo "{{PUBLIC_KEY}}" >> /home/git/admin.pub
+RUN ssh-keygen -t rsa -N "" -f /root/.ssh/id_rsa
+RUN cp /root/.ssh/id_rsa.pub /home/git/admin.pub
 RUN chown git:git /home/git/admin.pub
 
+WORKDIR /home/git
 USER git
+
 RUN mkdir -p /home/git/bin
 RUN git clone https://github.com/sitaramc/gitolite.git 
 RUN gitolite/install -to /home/git/bin
@@ -19,10 +20,17 @@ RUN gitolite/install -to /home/git/bin
 ENV USER git
 ENV HOME /home/git
 RUN /home/git/bin/gitolite setup -pk /home/git/admin.pub
-RUN sed -i 's|# LOCAL_CODE                =>  "$ENV{HOME}/local"|LOCAL_CODE                =>  "$ENV{HOME}/.gitolite/local-code"|g' /home/git/.gitolite.rc
+RUN sed -i 's|# LOCAL_CODE\s*=>\s*"$ENV{HOME}/local"|LOCAL_CODE => "$ENV{HOME}/.gitolite/local-code"|g' /home/git/.gitolite.rc
 RUN sed -i "s/# 'repo-specific-hooks'/'repo-specific-hooks'/g" /home/git/.gitolite.rc
-RUN sed -i "s/GIT_CONFIG_KEYS                 =>  ''/GIT_CONFIG_KEYS                 =>  '.*'/g" /home/git/.gitolite.rc
+RUN sed -i "s/GIT_CONFIG_KEYS \s*=>\s*''/GIT_CONFIG_KEYS => '.*'/g" /home/git/.gitolite.rc
 RUN cat /home/git/.gitolite.rc
 
+WORKDIR /root
 USER root
+
+RUN sed -i "s/# \s*StrictHostKeyChecking ask/StrictHostKeyChecking no/g" /etc/ssh/ssh_config
+RUN /usr/sbin/sshd -D & sleep 5 && git clone ssh://git@localhost/gitolite-admin
+ADD templates/usr/bin/createRepo /usr/bin/createRepo
+RUN chmod u+x /usr/bin/createRepo
+
 CMD ["/usr/bin/supervisord"]

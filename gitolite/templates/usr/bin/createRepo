@@ -1,0 +1,28 @@
+#!/bin/bash
+
+REPO_NAME=$1
+
+echo "repo    ${REPO_NAME}" >> /root/gitolite-admin/conf/gitolite.conf
+echo "        RW+             = @all" >> /root/gitolite-admin/conf/gitolite.conf
+echo "        option hook.post-receive = ${REPO_NAME}_notify_jenkin" >> /root/gitolite-admin/conf/gitolite.conf
+
+REPO_HOOK_FOLDER=/root/gitolite-admin/local-code/hooks/repo-specific
+GITOLITE_IP=$(cat /etc/hosts | grep `hostname` | cut -f1)
+
+if [ ! -d "$REPO_HOOK_FOLDER" ]; then
+  mkdir -p $REPO_HOOK_FOLDER
+fi
+cd $REPO_HOOK_FOLDER
+touch ${REPO_NAME}_notify_jenkin
+echo "#!/bin/bash" >> ${REPO_NAME}_notify_jenkin
+echo "/usr/bin/curl 'http://cd_jenkins:8080/git/notifyCommit?url=ssh://git@$GITOLITE_IP/$REPO_NAME'" >> ${REPO_NAME}_notify_jenkin
+chmod u+x ${REPO_NAME}_notify_jenkin
+
+cd /root/gitolite-admin
+
+JENKINS_PUBLIC_KEY=/root/gitolite-admin/keydir/cd_jenkins.pub
+if [ ! -f "$JENKINS_PUBLIC_KEY" ]; then
+	scp root@cd_jenkins:/home/jenkins/.ssh/id_rsa.pub keydir/cd_jenkins.pub	
+fi
+
+git add . && git commit -m 'Configured repo ${REPO_NAME}' && git push
