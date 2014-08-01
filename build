@@ -39,7 +39,7 @@ do
      esac
 done
  
-sed -r -e 's|\{\{SOFT_REPO_IP\}\}|$SOFT_REPO_IP|g' $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
+sed -r -e "s|\{\{SOFT_REPO_IP\}\}|$SOFT_REPO_IP|g" $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
 #sed -i -e 's|^RUN |RUN export http_proxy=http://192.168.15.39:3127 \&\& |g' $IMAGE_NAME/Dockerfile  
 
 cat $IMAGE_NAME/Dockerfile
