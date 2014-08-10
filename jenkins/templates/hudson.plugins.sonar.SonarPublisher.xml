@@ -9,7 +9,7 @@
       <databaseUrl></databaseUrl>
       <databaseDriver>com.mysql.jdbc.Driver</databaseDriver>
       <databaseLogin>sonar</databaseLogin>
-      <databasePassword>UGFzc3cwcmQ=</databasePassword>
+      <databasePassword></databasePassword>
       <additionalProperties></additionalProperties>
       <triggers>
         <skipScmCause>false</skipScmCause>
@@ -17,7 +17,7 @@
         <envVar></envVar>
       </triggers>
       <sonarLogin>sonar</sonarLogin>
-      <sonarPassword>UGFzc3cwcmQ=</sonarPassword>
+      <sonarPassword></sonarPassword>
     </hudson.plugins.sonar.SonarInstallation>
   </installations>
 </hudson.plugins.sonar.SonarPublisher_-DescriptorImpl>

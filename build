@@ -5,7 +5,7 @@ usage()
 cat << EOF
 usage: $0 options
 
-This script build Docker images for a CI/CD system.
+This script is to build Docker images for a CI/CD system.
 
 OPTIONS:
    -h      Show this message
@@ -18,6 +18,13 @@ EOF
 
 IMAGE_NAME=
 SOFT_REPO_IP=172.17.42.1
+
+JENKINS_VERSION=1.549
+JK_GIT_CLIENT_VERSION=1.10.0
+JK_SCM_API_VERSION=0.2
+JK_GIT_VERSION=2.2.2
+JK_ARTIFACTORY_VERSION=2.2.3
+JK_SONAR_VERSION=2.1
 
 while getopts “hn:i:” OPTION
 do
@@ -39,7 +46,14 @@ do
      esac
 done
  
-sed -r -e 's|\{\{SOFT_REPO_IP\}\}|$SOFT_REPO_IP|g' $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
+sed -r -e "s/\{\{SOFT_REPO_IP\}\}/$SOFT_REPO_IP/g" $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
+sed -i -e "s/{{JENKINS_VERSION}}/$JENKINS_VERSION/g" $IMAGE_NAME/Dockerfile
+sed -i -e "s/{{JK_GIT_CLIENT_VERSION}}/$JK_GIT_CLIENT_VERSION/g" $IMAGE_NAME/Dockerfile
+sed -i -e "s/{{JK_SCM_API_VERSION}}/$JK_SCM_API_VERSION/g" $IMAGE_NAME/Dockerfile
+sed -i -e "s/{{JK_GIT_VERSION}}/$JK_GIT_VERSION/g" $IMAGE_NAME/Dockerfile
+sed -i -e "s/{{JK_ARTIFACTORY_VERSION}}/$JK_ARTIFACTORY_VERSION/g" $IMAGE_NAME/Dockerfile
+sed -i -e "s/{{JK_SONAR_VERSION}}/$JK_SONAR_VERSION/g" $IMAGE_NAME/Dockerfile
+
 #sed -i -e 's|^RUN |RUN export http_proxy=http://192.168.15.39:3127 \&\& |g' $IMAGE_NAME/Dockerfile  
 
 cat $IMAGE_NAME/Dockerfile

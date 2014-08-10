@@ -1,8 +1,8 @@
 FROM nhantran/oraclejdk
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
-# Download and install Jenkins 1.549
-RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/1.549/jenkins.war
+# Download and install Jenkins
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/{{JENKINS_VERSION}}/jenkins.war
 RUN chmod 644 /opt/jenkins.war
 RUN useradd -m jenkins
 
@@ -23,17 +23,17 @@ WORKDIR /home/jenkins/.jenkins/plugins
 #ADD templates/jenkins.security.QueueItemAuthenticatorConfiguration.xml /home/jenkins/.jenkins/jenkins.security.QueueItemAuthenticatorConfiguration.xml
 
 # Install Git Plugin - Require git-client and scm-api to work
-RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/git-client/1.10.0/git-client.hpi
-RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/scm-api/0.2/scm-api.hpi
-RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/git/2.2.2/git.hpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/git-client/{{JK_GIT_CLIENT_VERSION}}/git-client.hpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/scm-api/{{JK_SCM_API_VERSION}}/scm-api.hpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/git/{{JK_GIT_VERSION}}/git.hpi
 ADD templates/hudson.plugins.git.GitTool.xml /home/jenkins/.jenkins/hudson.plugins.git.GitTool.xml
 
 # Install Artifactory plugin
-RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/artifactory/2.2.3/artifactory.hpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/artifactory/{{JK_ARTIFACTORY_VERSION}}/artifactory.hpi
 ADD templates/org.jfrog.hudson.ArtifactoryBuilder.xml /home/jenkins/.jenkins/org.jfrog.hudson.ArtifactoryBuilder.xml
 
 # Install Sonar Plugin
-RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/sonar/2.1/sonar.hpi
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jenkins/plugins/sonar/{{JK_SONAR_VERSION}}/sonar.hpi
 ADD templates/sonar.xml /home/jenkins/.jenkins/sonar.xml
 ADD templates/hudson.plugins.sonar.SonarPublisher.xml /home/jenkins/.jenkins/hudson.plugins.sonar.SonarPublisher.xml
 ADD templates/hudson.plugins.sonar.SonarRunnerInstallation.xml /home/jenkins/.jenkins/hudson.plugins.sonar.SonarRunnerInstallation.xml
@@ -67,6 +67,9 @@ RUN wget http://{{SOFT_REPO_IP}}/3rdparty/maven/apache-maven-2.0.9-bin.zip
 RUN unzip apache-maven-2.0.9-bin.zip
 RUN rm -f apache-maven-2.0.9-bin.zip
 RUN chown -R jenkins:jenkins apache-maven-2.0.9
+
+RUN ENC_PASSWD=$(echo $(sh /root/sharedpw) | base64 -) && sed -i -e "s/<databasePassword></<databasePassword>$ENC_PASSWD</g" /home/jenkins/.jenkins/hudson.plugins.sonar.SonarPublisher.xml
+RUN ENC_PASSWD=$(echo $(sh /root/sharedpw) | base64 -) && sed -i -e "s/<sonarPassword></<sonarPassword>$ENC_PASSWD</g" /home/jenkins/.jenkins/hudson.plugins.sonar.SonarPublisher.xml
 
 EXPOSE 8080
 

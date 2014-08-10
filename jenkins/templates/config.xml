@@ -25,7 +25,7 @@
     </jdk>
     <jdk>
       <name>Oracle JDK 7</name>
-      <home>jdk1.7.0_60</home>
+      <home>/opt/jdk1.7.0_60</home>
       <properties/>
     </jdk>
   </jdks>

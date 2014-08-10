@@ -22,7 +22,8 @@ cd /root/gitolite-admin
 
 JENKINS_PUBLIC_KEY=/root/gitolite-admin/keydir/cd_jenkins.pub
 if [ ! -f "$JENKINS_PUBLIC_KEY" ]; then
+	export SSH_ASKPASS=/root/sharedpw
 	scp root@cd_jenkins:/home/jenkins/.ssh/id_rsa.pub keydir/cd_jenkins.pub	
 fi
 
-git add . && git commit -m 'Configured repo ${REPO_NAME}' && git push
+git add . && git commit -m "Configured repo ${REPO_NAME}" && git push

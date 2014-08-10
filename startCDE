@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker run --name sonar_db -p 3306:3306 -t nhantran/sonarqubedb &
+sleep 10 && docker run --name sonar --link sonar_db:sonar_db -p 9000:9000 -t nhantran/sonarqube &
+sleep 10 && docker run --name jenkins --link sonar:sonar --link sonar_db:sonar_db -p 8080:8080 -t nhantran/jenkins &

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+docker stop jenkins
+docker rm jenkins
+docker stop sonar
+docker rm sonar
+docker stop sonar_db
+docker rm sonar_db
+

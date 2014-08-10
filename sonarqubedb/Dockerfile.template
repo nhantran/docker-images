@@ -1,20 +1,21 @@
 FROM nhantran/utility
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
-RUN apt-get update
-
 # Install MySQL server
-RUN echo 'mysql-server mysql-server/root_password password Passw0rd' | debconf-set-selections
-RUN echo 'mysql-server mysql-server/root_password_again password Passw0rd' | debconf-set-selections
+RUN PASSWD=$(sh /root/sharedpw) && echo "mysql-server mysql-server/root_password password $PASSWD" | debconf-set-selections
+RUN PASSWD=$(sh /root/sharedpw) && echo "mysql-server mysql-server/root_password_again password $PASSWD" | debconf-set-selections
 RUN apt-get install -y mysql-server
 
 # Copy the database script to container
-ADD create_database.sql /tmp/create_database.sql
+ADD templates/root/create_database.sql /root/create_database.sql
+# Fill up Mysql password
+RUN PASSWD=$(sh /root/sharedpw) && sed -i -e"s/{{MYSQL_PASSWD}}/$PASSWD/" /root/create_database.sql
 # Allow all hosts to access the database service
 RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
 # Start MySQL service, sleep 10s waiting for the service ready and creating the 'sonar' database
-RUN /usr/bin/mysqld_safe & sleep 10s && mysql -u root -pPassw0rd < /tmp/create_database.sql
+RUN /usr/bin/mysqld_safe & sleep 10s && PASSWD=$(sh /root/sharedpw) && mysql -u root -p$PASSWD < /root/create_database.sql
+RUN rm -f /root/create_database.sql
 
 EXPOSE 3306
 
