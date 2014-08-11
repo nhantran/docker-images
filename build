@@ -26,6 +26,10 @@ JK_GIT_VERSION=2.2.2
 JK_ARTIFACTORY_VERSION=2.2.3
 JK_SONAR_VERSION=2.1
 
+SONARQUBE_VERSION=4.1.2
+
+ARTIFACTORY_VERSION=3.2.2
+
 while getopts “hn:i:” OPTION
 do
      case $OPTION in
@@ -53,6 +57,10 @@ sed -i -e "s/{{JK_SCM_API_VERSION}}/$JK_SCM_API_VERSION/g" $IMAGE_NAME/Dockerfil
 sed -i -e "s/{{JK_GIT_VERSION}}/$JK_GIT_VERSION/g" $IMAGE_NAME/Dockerfile
 sed -i -e "s/{{JK_ARTIFACTORY_VERSION}}/$JK_ARTIFACTORY_VERSION/g" $IMAGE_NAME/Dockerfile
 sed -i -e "s/{{JK_SONAR_VERSION}}/$JK_SONAR_VERSION/g" $IMAGE_NAME/Dockerfile
+
+sed -i -e "s/{{SONARQUBE_VERSION}}/$SONARQUBE_VERSION/g" $IMAGE_NAME/Dockerfile
+
+sed -i -e "s/{{ARTIFACTORY_VERSION}}/$ARTIFACTORY_VERSION/g" $IMAGE_NAME/Dockerfile
 
 #sed -i -e 's|^RUN |RUN export http_proxy=http://192.168.15.39:3127 \&\& |g' $IMAGE_NAME/Dockerfile  
 

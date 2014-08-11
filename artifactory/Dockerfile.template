@@ -3,17 +3,22 @@ MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 WORKDIR /opt
 
-# Download and install Artifactory 3.2.2
-RUN wget http://{{SOFT_REPO_IP}}/3rdparty/artifactory/artifactory-3.2.2.zip
-RUN unzip artifactory-3.2.2.zip
-RUN rm -f artifactory-3.2.2.zip
+# Download and install Artifactory {{ARTIFACTORY_VERSION}}
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/artifactory/artifactory-{{ARTIFACTORY_VERSION}}.zip
+RUN unzip artifactory-{{ARTIFACTORY_VERSION}}.zip
+RUN rm -f artifactory-{{ARTIFACTORY_VERSION}}.zip
 
 ENV JAVA_HOME /opt/jdk1.7.0_60
+
+ADD templates/etc/security.import.xml /opt/artifactory-{{ARTIFACTORY_VERSION}}/etc/security.import.xml
+RUN SALTED_PASSWD=$(echo -n $(sh /root/sharedpw){CAFEBABEEBABEFAC} | md5sum | cut -d ' ' -f1) && sed -i -e "s/<password></<password>$SALTED_PASSWD</g" /opt/artifactory-{{ARTIFACTORY_VERSION}}/etc/security.import.xml
+
+RUN cat /opt/artifactory-{{ARTIFACTORY_VERSION}}/etc/security.import.xml
 
 EXPOSE 8081
 
 RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo "[program:artifactory]" >> /etc/supervisor/conf.d/supervisord.conf
-RUN echo "command=/opt/artifactory-3.2.2/bin/artifactory.sh" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/opt/artifactory-{{ARTIFACTORY_VERSION}}/bin/artifactory.sh" >> /etc/supervisor/conf.d/supervisord.conf
 
 CMD ["/usr/bin/supervisord"]

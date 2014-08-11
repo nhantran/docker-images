@@ -2,11 +2,11 @@ FROM nhantran/oraclejdk
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 # Download and install Sonarqube
-RUN wget http://{{SOFT_REPO_IP}}/3rdparty/sonarqube/sonarqube-4.1.2.zip
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/sonarqube/sonarqube-{{SONARQUBE_VERSION}}.zip
 
-RUN unzip -d /opt sonarqube-4.1.2.zip
-RUN mv /opt/sonarqube-4.1.2 /opt/sonarqube
-RUN rm -f sonarqube-4.1.2.zip
+RUN unzip -d /opt sonarqube-{{SONARQUBE_VERSION}}.zip
+RUN mv /opt/sonarqube-{{SONARQUBE_VERSION}} /opt/sonarqube
+RUN rm -f sonarqube-{{SONARQUBE_VERSION}}.zip
 
 RUN sed -i 's|#wrapper.java.additional.6=-server|wrapper.java.additional.6=-server|g' /opt/sonarqube/conf/wrapper.conf
 
