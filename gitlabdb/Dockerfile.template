@@ -1,0 +1,29 @@
+FROM nhantran/utility
+MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
+
+# Install the database packages
+RUN apt-get install -y postgresql-9.1 
+RUN apt-get install -y postgresql-client 
+RUN apt-get install -y libpq-dev
+
+ADD templates/home/postgres/create_database.sql /home/postgres/create_database.sql
+RUN PASSWD=$(sh /root/sharedpw) && sed -i -e"s/{{POSTGRES_PASSWD}}/$PASSWD/" /home/postgres/create_database.sql
+RUN chown postgres:postgres /home/postgres/create_database.sql
+
+USER postgres
+# Login to PostgreSQL
+RUN /etc/init.d/postgresql start && psql -f /home/postgres/create_database.sql
+
+USER root
+RUN sed -i -e "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.1/main/postgresql.conf
+RUN echo "host    all             all             172.17.0.0/16            md5" >> /etc/postgresql/9.1/main/pg_hba.conf
+RUN cat /etc/postgresql/9.1/main/pg_hba.conf
+
+EXPOSE 5432
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:postgres]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "user=postgres" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/etc/init.d/postgresql start" >> /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]

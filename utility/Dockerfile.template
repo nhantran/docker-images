@@ -10,10 +10,12 @@ RUN apt-get install -y openssh-server
 RUN apt-get install -y supervisor 
 RUN apt-get install -y inetutils-ping
 RUN apt-get install -y curl
+RUN apt-get install -y vim
+RUN update-alternatives --set editor /usr/bin/vim.basic
 
 RUN mkdir -p /var/run/sshd
 ADD templates/root/sharedpw /root/sharedpw
-RUN chmod u+x /root/sharedpw
+RUN chmod o+x /root/sharedpw
 RUN PASSWD=$(sh /root/sharedpw) && echo "root:$PASSWD" |chpasswd
 
 RUN mkdir -p /var/log/supervisor

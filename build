@@ -10,9 +10,7 @@ This script is to build Docker images for a CI/CD system.
 OPTIONS:
    -h      Show this message
    -n      Image name, is also the folder name of subfolders of docker-images
-   -v      Version of images to build
    -i      Software repository IP, where hosting offline softwares
-   -k      Public key of this user
 EOF
 }
 
