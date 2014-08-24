@@ -52,6 +52,8 @@ RUN git --version
 RUN git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-1-stable gitlab
 WORKDIR /home/git/gitlab
 RUN cp config/gitlab.yml.example config/gitlab.yml
+RUN sed -i -e "s|host: localhost|host: {{GITLAB_FQDN}}|g" config/gitlab.yml
+RUN sed -i -e "s|email_from: example@example.com|email_from: {{GITLAB_EMAIL_FROM}}|g" config/gitlab.yml
 RUN sed -i -e "s|bin_path: /usr/bin/git|bin_path: /usr/local/bin/git|g" config/gitlab.yml
 RUN cat config/gitlab.yml
 RUN chown -R git log/
@@ -71,7 +73,11 @@ RUN git config --global user.email "tranphanquocnhan@gmail.com"
 RUN git config --global core.autocrlf input
 
 RUN cp config/database.yml.postgresql config/database.yml
-RUN PASSWD=Passw0rd && sed -i -e "s/# password:/password: $PASSWD/g" config/database.yml
+
+USER root
+RUN PASSWD=$(sh /root/sharedpw) && sed -i -e "s/# password:/password: $PASSWD/g" config/database.yml
+
+USER git
 RUN sed -i -e "s/# host: localhost/host: gitlab_db/g" config/database.yml  
 RUN chmod o-rwx config/database.yml
 RUN bundle install --deployment --without development test mysql aws
