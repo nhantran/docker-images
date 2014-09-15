@@ -1,0 +1,24 @@
+FROM nhantran/oraclejdk
+MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
+
+WORKDIR /opt
+
+# Download and install Cassandra {{CASSANDRA_VERSION}}
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/cassandra/dsc-cassandra-{{CASSANDRA_VERSION}}-bin.tar.gz
+RUN tar -xzf dsc-cassandra-{{CASSANDRA_VERSION}}-bin.tar.gz 
+
+RUN rm -f dsc-cassandra-{{CASSANDRA_VERSION}}-bin.tar.gz
+WORKDIR dsc-cassandra-{{CASSANDRA_VERSION}}/lib
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jna/jna-{{JNA_VERSION}}.jar
+RUN echo "$USER soft memlock unlimited" >> /etc/security/limits.conf
+RUN echo "$USER hard memlock unlimited" >> /etc/security/limits.conf
+
+ENV JAVA_HOME /opt/jdk1.7.0_60
+
+EXPOSE 9042
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:cassandra]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/opt/dsc-cassandra-{{CASSANDRA_VERSION}}/bin/cassandra -f" >> /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]

@@ -31,6 +31,9 @@ ARTIFACTORY_VERSION=3.2.2
 GITLAB_FQDN=gitlab
 GITLAB_EMAIL_FROM=tranphanquocnhan@gmail.com
 
+CASSANDRA_VERSION=2.0.9
+JNA_VERSION=4.1.0
+
 while getopts “hn:i:” OPTION
 do
      case $OPTION in
@@ -65,6 +68,9 @@ sed -i -e "s/{{ARTIFACTORY_VERSION}}/$ARTIFACTORY_VERSION/g" $IMAGE_NAME/Dockerf
 
 sed -i -e "s/{{GITLAB_FQDN}}/$GITLAB_FQDN/g" $IMAGE_NAME/Dockerfile
 sed -i -e "s/{{GITLAB_EMAIL_FROM}}/$GITLAB_EMAIL_FROM/g" $IMAGE_NAME/Dockerfile
+
+sed -i -e "s/{{CASSANDRA_VERSION}}/$CASSANDRA_VERSION/g" $IMAGE_NAME/Dockerfile
+sed -i -e "s/{{JNA_VERSION}}/$JNA_VERSION/g" $IMAGE_NAME/Dockerfile
 
 #sed -i -e 's|^RUN |RUN export http_proxy=http://192.168.15.39:3127 \&\& |g' $IMAGE_NAME/Dockerfile  
 
