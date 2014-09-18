@@ -18,6 +18,9 @@ ADD templates/root/sharedpw /root/sharedpw
 RUN chmod o+x /root/sharedpw
 RUN PASSWD=$(sh /root/sharedpw) && echo "root:$PASSWD" |chpasswd
 
+ADD templates/usr/bin/extract /usr/bin/extract
+RUN chmod u+x /usr/bin/extract
+
 RUN mkdir -p /var/log/supervisor
 
 ADD templates/etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf

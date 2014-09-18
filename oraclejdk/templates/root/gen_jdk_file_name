@@ -1,0 +1,28 @@
+#!/bin/bash
+
+OIFS=$IFS
+IFS='.'
+arr=($1)
+
+count=0
+for v in "${arr[@]}"; do
+  let count=count+1
+  if [ "$count" = "2" ]; then
+    major="$v"
+  fi
+  if [ "$count" = "3" ]; then
+    minor=`echo $v | cut -c 3-`
+  fi 
+done
+
+IFS=$OIFS
+
+if [ "$major" = "6" ]; then
+  echo "jdk-6u$minor-linux-x64.bin"
+fi
+if [ "$major" = "7" ]; then
+  echo "jdk-7u$minor-linux-x64.tar.gz"
+fi
+
+
+

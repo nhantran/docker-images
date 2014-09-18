@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ "$1" = *.bin ]]; then
+  ./$1
+fi
+
+if [[ "$1" = *.tar.gz ]]; then
+  tar -xvf $1
+fi
+
+rm -f $1
+

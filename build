@@ -17,6 +17,8 @@ EOF
 IMAGE_NAME=
 SOFT_REPO_IP=172.17.42.1
 
+JDK_VERSION=1.7.0_60
+
 JENKINS_VERSION=1.549
 JK_GIT_CLIENT_VERSION=1.10.0
 JK_SCM_API_VERSION=0.2
@@ -33,6 +35,7 @@ GITLAB_EMAIL_FROM=tranphanquocnhan@gmail.com
 
 CASSANDRA_VERSION=2.0.9
 JNA_VERSION=4.1.0
+OPSCENTER_VERSION=5.0.0
 
 while getopts “hn:i:” OPTION
 do
@@ -55,6 +58,9 @@ do
 done
  
 sed -r -e "s/\{\{SOFT_REPO_IP\}\}/$SOFT_REPO_IP/g" $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
+
+sed -i -e "s/{{JDK_VERSION}}/$JDK_VERSION/g" $IMAGE_NAME/Dockerfile
+
 sed -i -e "s/{{JENKINS_VERSION}}/$JENKINS_VERSION/g" $IMAGE_NAME/Dockerfile
 sed -i -e "s/{{JK_GIT_CLIENT_VERSION}}/$JK_GIT_CLIENT_VERSION/g" $IMAGE_NAME/Dockerfile
 sed -i -e "s/{{JK_SCM_API_VERSION}}/$JK_SCM_API_VERSION/g" $IMAGE_NAME/Dockerfile
@@ -72,7 +78,7 @@ sed -i -e "s/{{GITLAB_EMAIL_FROM}}/$GITLAB_EMAIL_FROM/g" $IMAGE_NAME/Dockerfile
 sed -i -e "s/{{CASSANDRA_VERSION}}/$CASSANDRA_VERSION/g" $IMAGE_NAME/Dockerfile
 sed -i -e "s/{{JNA_VERSION}}/$JNA_VERSION/g" $IMAGE_NAME/Dockerfile
 
-#sed -i -e 's|^RUN |RUN export http_proxy=http://192.168.15.39:3127 \&\& |g' $IMAGE_NAME/Dockerfile  
+sed -i -e "s/{{OPSCENTER_VERSION}}/$OPSCENTER_VERSION/g" $IMAGE_NAME/Dockerfile
 
 cat $IMAGE_NAME/Dockerfile
 

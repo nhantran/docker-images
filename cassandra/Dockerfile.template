@@ -13,9 +13,7 @@ RUN wget http://{{SOFT_REPO_IP}}/3rdparty/jna/jna-{{JNA_VERSION}}.jar
 RUN echo "$USER soft memlock unlimited" >> /etc/security/limits.conf
 RUN echo "$USER hard memlock unlimited" >> /etc/security/limits.conf
 
-ENV JAVA_HOME /opt/jdk1.7.0_60
-
-EXPOSE 9042
+EXPOSE 9042 7199 9160
 
 RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
 RUN echo "[program:cassandra]" >> /etc/supervisor/conf.d/supervisord.conf
