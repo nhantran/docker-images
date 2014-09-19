@@ -14,6 +14,8 @@ RUN echo "root - memlock unlimited" >> /etc/security/limits.conf
 RUN echo "root - nofile 100000" >> /etc/security/limits.conf
 RUN echo "root - nproc 32768" >> /etc/security/limits.conf
 RUN echo "root - as unlimited" >> /etc/security/limits.conf
+RUN echo "vm.max_map_count = 131072" >> /etc/sysctl.conf
+
 EXPOSE 9042 7199 9160
 
 RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
