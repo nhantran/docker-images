@@ -6,7 +6,6 @@ RUN chmod u+x /root/gen_jdk_file_name
 
 WORKDIR /opt
 
-# Use Oracle JDK 6 as default java for running Jenkins and also as an option of Jenkins builds
 RUN wget http://{{SOFT_REPO_IP}}/3rdparty/java/`echo "$(/root/gen_jdk_file_name {{JDK_VERSION}})"`
 RUN chmod u+x `echo "$(/root/gen_jdk_file_name {{JDK_VERSION}})"`
 RUN extract `echo "$(/root/gen_jdk_file_name {{JDK_VERSION}})"`
