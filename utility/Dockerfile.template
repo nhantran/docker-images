@@ -14,9 +14,7 @@ RUN apt-get install -y vim
 RUN update-alternatives --set editor /usr/bin/vim.basic
 
 RUN mkdir -p /var/run/sshd
-ADD templates/root/sharedpw /root/sharedpw
-RUN chmod o+x /root/sharedpw
-RUN PASSWD=$(sh /root/sharedpw) && echo "root:$PASSWD" |chpasswd
+RUN echo "root:{{PASSWORD}}" |chpasswd
 
 ADD templates/usr/bin/extract /usr/bin/extract
 RUN chmod u+x /usr/bin/extract

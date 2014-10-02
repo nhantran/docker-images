@@ -1,0 +1,25 @@
+FROM nhantran/oraclejdk
+MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
+
+ENV HOME /root
+RUN git clone https://github.com/gmarik/Vundle.vim.git /root/.vim/bundle/Vundle.vim
+RUN ls -al /root/.vim/bundle/Vundle.vim
+ADD templates/.vimrc /root/.vimrc
+RUN vim +"so /root/.vimrc" +PluginInstall +qall
+
+WORKDIR /root
+
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/sbt/sbt-0.13.6.tgz
+RUN tar -xvf sbt-0.13.6.tgz
+RUN rm sbt-0.13.6.tgz
+
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/scala/scala-2.11.2.tgz
+RUN tar -xvf scala-2.11.2.tgz
+RUN rm scala-2.11.2.tgz
+
+ENV SBT_HOME /root/sbt
+ENV SCALA_HOME /root/scala-2.11.2
+RUN echo "export PATH=$PATH:$SBT_HOME/bin:$SCALA_HOME/bin" >> /root/.profile
+
+RUN cat /root/.profile
+CMD ["/usr/bin/supervisord"]

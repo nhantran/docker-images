@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-usage()
+show_help()
 {
 cat << EOF
 usage: $0 options
@@ -8,14 +8,80 @@ usage: $0 options
 This script is to build Docker images for a CI/CD system.
 
 OPTIONS:
-   -h      Show this message
-   -n      Image name, is also the folder name of subfolders of docker-images
-   -i      Software repository IP, where hosting offline softwares
+   -h|--help|-\?      Show this message
+   -n|--name          Image name, is also the folder name of subfolders of docker-images
+   -i|--ip            Software repository IP, where hosting offline softwares
 EOF
 }
 
+# Reset all variables that might be set
 IMAGE_NAME=
+VERBOSE=0
 SOFT_REPO_IP=172.17.42.1
+
+while :; do
+  case $1 in
+    -h|-\?|--help)   # Call a "show_help" function to display a synopsis, then exit.
+      show_help
+      exit
+      ;;
+    -n|--name)       # Takes an option argument, ensuring it has been specified.
+      if [ "$2" ]; then
+        IMAGE_NAME=$2
+        shift 2
+        continue
+      else
+        echo 'ERROR: Must specify a non-empty "--name IMAGENAME" argument.' >&2
+        exit 1
+      fi
+      ;;
+    --name=?*)
+      IMAGE_NAME=${1#*=} # Delete everything up to "=" and assign the remainder.
+      ;;
+    --name=)         # Handle the case of an empty --file=
+      echo 'ERROR: Must specify a non-empty "--file IMAGENAME" argument.' >&2
+      exit 1
+      ;;
+    -i|--ip)       # Takes an option argument, ensuring it has been specified.
+      if [ "$2" ]; then
+        SOFT_REPO_IP=$2
+        shift 2
+        continue
+      else
+        echo 'WARN: Must specify a non-empty "--ip SOFT_REPO_IP" argument. Falling back to use the default IP' >&2
+        continue
+      fi
+      ;;
+    --ip=?*)
+      SOFT_REPO_IP=${1#*=} # Delete everything up to "=" and assign the remainder.
+      ;;
+    --ip=)         # Handle the case of an empty --file=
+      echo 'WARN: Must specify a non-empty "--ip SOFT_REPO_IP" argument. Falling back to use the default IP' >&2
+      continue
+      ;;
+    -v|--verbose)
+      VERBOSE=$((VERBOSE + 1)) # Each -v argument adds 1 to verbosity.
+      ;;
+    --)              # End of all options.
+      shift
+      break
+      ;;
+    -?*)
+      printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
+      ;;
+    *)               # Default case: If no more options then break out of the loop.
+      break
+  esac
+  shift
+done
+
+# Suppose --name is a required option. Check that it has been set.
+if [ ! "$IMAGE_NAME" ]; then
+  echo 'ERROR: option "--name IMAGENAME" not given. See --help.' >&2
+  exit 1
+fi
+
+PASSWORD=Passw0rd
 
 JDK_VERSION=1.7.0_60
 
@@ -36,28 +102,10 @@ GITLAB_EMAIL_FROM=tranphanquocnhan@gmail.com
 CASSANDRA_VERSION=2.0.9
 JNA_VERSION=4.1.0
 OPSCENTER_VERSION=5.0.0
-
-while getopts “hn:i:” OPTION
-do
-     case $OPTION in
-         h)
-             usage
-             exit 1
-             ;;
-         n)
-             IMAGE_NAME=$OPTARG
-             ;;
-         i)
-             SOFT_REPO_IP=$OPTARG
-             ;;
-         ?)
-             usage
-             exit
-             ;;
-     esac
-done
  
-sed -r -e "s/\{\{SOFT_REPO_IP\}\}/$SOFT_REPO_IP/g" $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
+sed -r -e "s/\{\{PASSWORD\}\}/$PASSWORD/g" $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
+
+sed -i -e "s/{{SOFT_REPO_IP}}/$SOFT_REPO_IP/g" $IMAGE_NAME/Dockerfile
 
 sed -i -e "s/{{JDK_VERSION}}/$JDK_VERSION/g" $IMAGE_NAME/Dockerfile
 
