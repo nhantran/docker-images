@@ -7,8 +7,6 @@ RUN ls -al /root/.vim/bundle/Vundle.vim
 ADD templates/.vimrc /root/.vimrc
 RUN vim +"so /root/.vimrc" +PluginInstall +qall
 
-RUN curl -L http://install.ohmyz.sh | sh
-
 WORKDIR /root
 
 RUN wget http://{{SOFT_REPO_IP}}/3rdparty/sbt/sbt-0.13.6.tgz
@@ -22,6 +20,10 @@ RUN rm scala-2.11.2.tgz
 ENV SBT_HOME /root/sbt
 ENV SCALA_HOME /root/scala-2.11.2
 RUN echo "export PATH=$PATH:$SBT_HOME/bin:$SCALA_HOME/bin" >> /root/.profile
+
+RUN apt-get install -y zsh
+RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
+RUN chsh -x `which zsh`
 
 RUN cat /root/.profile
 CMD ["/usr/bin/supervisord"]
