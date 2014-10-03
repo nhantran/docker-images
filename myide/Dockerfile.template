@@ -7,6 +7,8 @@ RUN ls -al /root/.vim/bundle/Vundle.vim
 ADD templates/.vimrc /root/.vimrc
 RUN vim +"so /root/.vimrc" +PluginInstall +qall
 
+RUN curl -L http://install.ohmyz.sh | sh
+
 WORKDIR /root
 
 RUN wget http://{{SOFT_REPO_IP}}/3rdparty/sbt/sbt-0.13.6.tgz
