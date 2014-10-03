@@ -18,6 +18,7 @@ EOF
 IMAGE_NAME=
 VERBOSE=0
 SOFT_REPO_IP=172.17.42.1
+DEPENDENT_VERSION=latest
 
 while :; do
   case $1 in
@@ -59,6 +60,23 @@ while :; do
       echo 'WARN: Must specify a non-empty "--ip SOFT_REPO_IP" argument. Falling back to use the default IP' >&2
       continue
       ;;
+    -d|--depend)       # Takes an option argument, ensuring it has been specified.
+      if [ "$2" ]; then
+        DEPENDENT_VERSION=$2
+        shift 2
+        continue
+      else
+        echo 'WARN: Must specify a non-empty "--depend DEPENDENT_VERSION" argument. Falling back to use the "latest" version' >&2
+        continue
+      fi
+      ;;
+    --depend=?*)
+      DEPENDENT_VERSION=${1#*=} # Delete everything up to "=" and assign the remainder.
+      ;;
+    --depend=)         # Handle the case of an empty --file=
+      echo 'WARN: Must specify a non-empty "--depend DEPENDENT_VERSION" argument. Falling back to use the "latest" version' >&2
+      continue
+      ;;   
     -v|--verbose)
       VERBOSE=$((VERBOSE + 1)) # Each -v argument adds 1 to verbosity.
       ;;
@@ -103,7 +121,9 @@ CASSANDRA_VERSION=2.0.9
 JNA_VERSION=4.1.0
 OPSCENTER_VERSION=5.0.0
  
-sed -r -e "s/\{\{PASSWORD\}\}/$PASSWORD/g" $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
+sed -r -e "s/\{\{DEPENDENT_VERSION\}\}/$DEPENDENT_VERSION/g" $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
+
+sed -i -e "s/\{\{PASSWORD\}\}/$PASSWORD/g" $IMAGE_NAME/Dockerfile
 
 sed -i -e "s/{{SOFT_REPO_IP}}/$SOFT_REPO_IP/g" $IMAGE_NAME/Dockerfile
 

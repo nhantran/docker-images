@@ -1,4 +1,4 @@
-FROM nhantran/utility
+FROM nhantran/utility:{{DEPENDENT_VERSION}}
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 ADD templates/root/gen_jdk_file_name /root/gen_jdk_file_name

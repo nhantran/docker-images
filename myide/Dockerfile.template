@@ -1,4 +1,4 @@
-FROM nhantran/oraclejdk
+FROM nhantran/oraclejdk:{{DEPENDENT_VERSION}}
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 ENV HOME /root

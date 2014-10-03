@@ -1,4 +1,4 @@
-FROM ubuntu:12.04
+FROM ubuntu:{{DEPENDENT_VERSION}}
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 RUN apt-get update
