@@ -121,7 +121,11 @@ fi
 
 PASSWORD=Passw0rd
 
-JDK_VERSION=1.7.0_60
+if [ "$TAG" = "latest" ]; then
+  JDK_VERSION=1.6.0_45
+else
+  JDK_VERSION=$TAG
+fi 
 
 JENKINS_VERSION=1.549
 JK_GIT_CLIENT_VERSION=1.10.0
