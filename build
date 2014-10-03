@@ -11,6 +11,8 @@ OPTIONS:
    -h|--help|-\?      Show this message
    -n|--name          Image name, is also the folder name of subfolders of docker-images
    -i|--ip            Software repository IP, where hosting offline softwares
+   -d|--depend        The dependent tag that this image depends on
+   -t|--tag           The tag of this image
 EOF
 }
 
@@ -19,6 +21,7 @@ IMAGE_NAME=
 VERBOSE=0
 SOFT_REPO_IP=172.17.42.1
 DEPENDENT_VERSION=latest
+TAG=latest
 
 while :; do
   case $1 in
@@ -75,6 +78,23 @@ while :; do
       ;;
     --depend=)         # Handle the case of an empty --file=
       echo 'WARN: Must specify a non-empty "--depend DEPENDENT_VERSION" argument. Falling back to use the "latest" version' >&2
+      continue
+      ;;   
+    -t|--tag)       # Takes an option argument, ensuring it has been specified.
+      if [ "$2" ]; then
+        TAG=$2
+        shift 2
+        continue
+      else
+        echo 'WARN: Must specify a non-empty "--tag TAG" argument. Falling back to use the "latest" tag' >&2
+        continue
+      fi
+      ;;
+    --tag=?*)
+      TAG=${1#*=} # Delete everything up to "=" and assign the remainder.
+      ;;
+    --tag=)         # Handle the case of an empty --file=
+      echo 'WARN: Must specify a non-empty "--tag TAG" argument. Falling back to use the "latest" tag' >&2
       continue
       ;;   
     -v|--verbose)
@@ -150,7 +170,7 @@ sed -i -e "s/{{OPSCENTER_VERSION}}/$OPSCENTER_VERSION/g" $IMAGE_NAME/Dockerfile
 
 cat $IMAGE_NAME/Dockerfile
 
-docker build -t nhantran/$IMAGE_NAME $IMAGE_NAME/
+docker build -t nhantran/$IMAGE_NAME:$TAG $IMAGE_NAME/
 
 # Cleanup temporary files
 rm -f $IMAGE_NAME/Dockerfile
