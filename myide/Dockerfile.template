@@ -23,7 +23,7 @@ RUN echo "export PATH=$PATH:$SBT_HOME/bin:$SCALA_HOME/bin" >> /root/.profile
 
 RUN apt-get install -y zsh
 RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
-RUN chsh -x `which zsh`
+RUN chsh -s `which zsh`
 
 RUN cat /root/.profile
 CMD ["/usr/bin/supervisord"]
