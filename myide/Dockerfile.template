@@ -19,11 +19,10 @@ RUN rm scala-2.11.2.tgz
 
 ENV SBT_HOME /root/sbt
 ENV SCALA_HOME /root/scala-2.11.2
-RUN echo "export PATH=$PATH:$SBT_HOME/bin:$SCALA_HOME/bin" >> /root/.profile
+ENV PATH $PATH:$SBT_HOME/bin:$SCALA_HOME/bin
 
 RUN apt-get install -y zsh
 RUN curl -L http://install.ohmyz.sh | zsh
 RUN chsh -s `which zsh`
 
-RUN cat /root/.profile
 CMD ["/usr/bin/supervisord"]
