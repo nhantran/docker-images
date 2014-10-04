@@ -186,6 +186,7 @@ let g:ctrlp_prompt_mappings = {
   \ 'PrtHistory(1)':        ['<c-i>', '<up>']
 \ }
 let g:ctrlp_show_hidden = 1
+let g:ctrlp_regexp = 1
 nmap ,fb :CtrlPBuffer<cr>
 nmap ,ff :CtrlP .<cr>
 nmap ,fF :execute ":CtrlP " . expand('%:p:h')<cr>
