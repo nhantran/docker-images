@@ -148,6 +148,25 @@ set wildignore+=*.o,*.class,*.git,*.svn
 " sucks.  Setting it to double makes it awesome.
 set ambiwidth=double
 
+" Syntax coloring lines that are too long just slows down the world
+set synmaxcol=2048
+
+" I don't like it when the matching parens are automatically highlighted
+let loaded_matchparen = 1
+
+" Highlight the current line and column
+" Don't do this - It makes window redraws painfully slow
+set nocursorline
+set nocursorcolumn
+
+if has("mac")
+  let g:main_font = "Anonymous\\ Pro:h11"
+  let g:small_font = "Anonymous\\ Pro:h2"
+else
+  let g:main_font = "DejaVu\\ Sans\\ Mono\\ 9"
+  let g:small_font = "DejaVu\\ Sans\\ Mono\\ 2"
+endif
+
 "-----------------------------------------------------------------------------
 " XPTemplate settings
 "-----------------------------------------------------------------------------

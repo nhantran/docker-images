@@ -2,6 +2,7 @@ FROM ubuntu:{{DEPENDENT_VERSION}}
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
 RUN apt-get update
+RUN apt-get upgrade -y
 
 RUN apt-get install -y wget 
 RUN apt-get install -y unzip 
@@ -15,6 +16,7 @@ RUN update-alternatives --set editor /usr/bin/vim.basic
 
 RUN mkdir -p /var/run/sshd
 RUN echo "root:{{PASSWORD}}" |chpasswd
+RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 ADD templates/usr/bin/extract /usr/bin/extract
 RUN chmod u+x /usr/bin/extract
