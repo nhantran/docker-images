@@ -148,6 +148,17 @@ set wildignore+=*.o,*.class,*.git,*.svn
 " sucks.  Setting it to double makes it awesome.
 set ambiwidth=double
 
+" OK, so I'm gonna remove the VIM safety net for a while and see if kicks my ass
+set nobackup
+set nowritebackup
+set noswapfile
+
+" I don't want to have the default keymappings for my scala plugin evaluated
+let g:scala_use_default_keymappings = 0
+
+" System default for mappings is now the "," character
+let mapleader = ","
+
 " Syntax coloring lines that are too long just slows down the world
 set synmaxcol=2048
 
