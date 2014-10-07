@@ -23,7 +23,7 @@ ENV PATH $PATH:$SBT_HOME/bin:$SCALA_HOME/bin
 
 RUN wget http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10-minimal.zip
 RUN unzip typesafe-activator-1.2.10-minimal.zip
-RUN mv typesafe-activator-1.2.10-minimal activator
+RUN mv activator-1.2.10-minimal activator
 RUN rm typesafe-activator-1.2.10-minimal.zip
 
 EXPOSE 8888
