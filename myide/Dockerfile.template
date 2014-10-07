@@ -1,10 +1,6 @@
 FROM nhantran/oraclejdk:{{DEPENDENT_VERSION}}
 MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
 
-RUN apt-get install -y zsh
-RUN curl -L http://install.ohmyz.sh | zsh
-RUN chsh -s `which zsh`
-
 ENV HOME /root
 RUN git clone https://github.com/gmarik/Vundle.vim.git /root/.vim/bundle/Vundle.vim
 RUN ls -al /root/.vim/bundle/Vundle.vim
@@ -31,6 +27,11 @@ RUN mv activator-1.2.10-minimal activator
 RUN rm typesafe-activator-1.2.10-minimal.zip
 
 ADD templates/.tmux.conf /root/.tmux.conf
+
+# Installing zsh should be done lately, otherwise PATH will not include other environment variables
+RUN apt-get install -y zsh
+RUN curl -L http://install.ohmyz.sh | zsh
+RUN chsh -s `which zsh`
 
 EXPOSE 8888
 EXPOSE 9000
