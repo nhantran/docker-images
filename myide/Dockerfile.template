@@ -23,7 +23,10 @@ ENV PATH $PATH:$SBT_HOME/bin:$SCALA_HOME/bin
 
 RUN wget http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10-minimal.zip
 RUN unzip typesafe-activator-1.2.10-minimal.zip
+RUN mv typesafe-activator-1.2.10-minimal activator
 RUN rm typesafe-activator-1.2.10-minimal.zip
+
+EXPOSE 8888
 
 RUN apt-get install -y zsh
 RUN curl -L http://install.ohmyz.sh | zsh
