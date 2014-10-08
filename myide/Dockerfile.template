@@ -32,7 +32,15 @@ RUN apt-get install -y exuberant-ctags
 RUN git config --global init.templatedir '/root/.git_template'
 RUN mkdir -p /root/.git_template/hooks
 ADD templates/.git_template/hooks/ctags /root/.git_template/hooks/ctags
+ADD templates/.git_template/hooks/post-commit /root/.git_template/hooks/post-commit
+ADD templates/.git_template/hooks/post-merge /root/.git_template/hooks/post-merge
+ADD templates/.git_template/hooks/post-checkout /root/.git_template/hooks/post-checkout
+ADD templates/.git_template/hooks/post-rewrite /root/.git_template/hooks/post-rewrite
 RUN chmod u+x /root/.git_template/hooks/ctags
+RUN chmod u+x /root/.git_template/hooks/post-commit
+RUN chmod u+x /root/.git_template/hooks/post-merge
+RUN chmod u+x /root/.git_template/hooks/post-checkout
+RUN chmod u+x /root/.git_template/hooks/post-rewrite
 
 # Installing zsh should be done lately, otherwise PATH will not include other environment variables
 RUN apt-get install -y zsh
