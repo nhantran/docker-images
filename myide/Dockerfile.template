@@ -29,6 +29,10 @@ RUN rm typesafe-activator-1.2.10-minimal.zip
 ADD templates/.tmux.conf /root/.tmux.conf
 ADD templates/.ctags /root/.ctags
 RUN apt-get install -y exuberant-ctags
+RUN git config --global init.templatedir '/root/.git_template'
+RUN mkdir -p /root/.git_template/hooks
+ADD templates/.git_template/hooks/ctags /root/.git_template/hooks/ctags
+RUN chmod u+x /root/.git_template/hooks/ctags
 
 # Installing zsh should be done lately, otherwise PATH will not include other environment variables
 RUN apt-get install -y zsh
