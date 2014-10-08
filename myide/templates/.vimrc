@@ -154,6 +154,10 @@ set nobackup
 set nowritebackup
 set noswapfile
 
+" Look at directory hierarchy for finding the definition 
+" Call `ctags -R . --exclude=target` for creating tag files
+set tags=tags;/
+
 " I don't want to have the default keymappings for my scala plugin evaluated
 let g:scala_use_default_keymappings = 0
 
