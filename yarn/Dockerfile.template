@@ -1,0 +1,78 @@
+FROM nhantran/oraclejdk:{{DEPENDENT_VERSION}}
+MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
+
+RUN mkdir /opt/yarn
+
+WORKDIR /opt/yarn
+
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/hadoop/hadoop-2.2.0.tar.gz
+
+RUN tar xvzf hadoop-2.2.0.tar.gz
+
+RUN groupadd hadoop
+
+RUN useradd -g hadoop yarn 
+RUN useradd -g hadoop hdfs 
+RUN useradd -g hadoop mapred 
+
+RUN mkdir -p /var/data/hadoop/hdfs/nn
+RUN mkdir -p /var/data/hadoop/hdfs/snn
+RUN mkdir -p /var/data/hadoop/hdfs/dn
+RUN chown hdfs:hadoop /var/data/hadoop/hdfs -R
+RUN mkdir -p /var/log/hadoop/yarn
+RUN chown yarn:hadoop /var/log/hadoop/yarn -R
+
+WORKDIR /opt/yarn/hadoop-2.2.0
+RUN mkdir logs
+RUN chmod g+w logs
+RUN chown yarn:hadoop . -R
+
+ADD templates/core-site.xml /opt/yarn/hadoop-2.2.0/etc/hadoop/core-site.xml
+ADD templates/hdfs-site.xml /opt/yarn/hadoop-2.2.0/etc/hadoop/hdfs-site.xml
+ADD templates/mapred-site.xml /opt/yarn/hadoop-2.2.0/etc/hadoop/mapred-site.xml
+ADD templates/yarn-site.xml /opt/yarn/hadoop-2.2.0/etc/hadoop/yarn-site.xml
+
+USER yarn
+
+RUN sed -i -e "s/#export HADOOP_HEAPSIZE=/export HADOOP_HEAPSIZE=\"500\"/g" /opt/yarn/hadoop-2.2.0/etc/hadoop/hadoop-env.sh
+RUN sed -i -e "s/#export HADOOP_NAMENODE_INIT_HEAPSIZE=\"\"/export HADOOP_NAMENODE_INIT_HEAPSIZE=\"500\"/g" /opt/yarn/hadoop-2.2.0/etc/hadoop/hadoop-env.sh
+RUN sed -i -e "s/HADOOP_JOB_HISTORYSERVER_HEAPSIZE=1000/HADOOP_JOB_HISTORYSERVER_HEADPSIZE=\"250\"/g" /opt/yarn/hadoop-2.2.0/etc/hadoop/mapred-env.sh
+RUN sed -i -e "s/YARN_HEAPSIZE=1000/YARN_HEAPSIZE=\"500\"/g" /opt/yarn/hadoop-2.2.0/etc/hadoop/yarn-env.sh
+
+USER hdfs
+
+WORKDIR /opt/yarn/hadoop-2.2.0/bin
+
+ENV JAVA_HOME /opt/jdk1.6.0_45
+RUN ./hdfs namenode -format
+
+USER root
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:hdfs_nn]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "user=hdfs" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/opt/yarn/hadoop-2.2.0/sbin/hadoop-daemon.sh start namenode" >> /etc/supervisor/conf.d/supervisord.conf
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:hdfs_snn]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "user=hdfs" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/opt/yarn/hadoop-2.2.0/sbin/hadoop-daemon.sh start secondarynamenode" >> /etc/supervisor/conf.d/supervisord.conf
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:hdfs_dn]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "user=hdfs" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/opt/yarn/hadoop-2.2.0/sbin/hadoop-daemon.sh start datanode" >> /etc/supervisor/conf.d/supervisord.conf
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:yarn_rm]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "user=yarn" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/opt/yarn/hadoop-2.2.0/sbin/yarn-daemon.sh start resourcemanager" >> /etc/supervisor/conf.d/supervisord.conf
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:yarn_nm]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "user=yarn" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=/opt/yarn/hadoop-2.2.0/sbin/yarn-daemon.sh start nodemanager" >> /etc/supervisor/conf.d/supervisord.conf
+
+EXPOSE 50070 8088
+
+CMD ["/usr/bin/supervisord"]
