@@ -1,0 +1,23 @@
+FROM nhantran/oraclejdk:{{DEPENDENT_VERSION}}
+MAINTAINER Nhan Tran <tranphanquocnhan@gmail.com>
+
+RUN mkdir -p /opt/sonatype
+WORKDIR /opt/sonatype
+RUN wget http://{{SOFT_REPO_IP}}/3rdparty/nexus/nexus-{{NEXUS_VERSION}}-bundle.tar.gz
+RUN tar xvf nexus-{{NEXUS_VERSION}}-bundle.tar.gz
+RUN mv nexus-{{NEXUS_VERSION}} nexus
+RUN rm nexus-{{NEXUS_VERSION}}-bundle.tar.gz
+WORKDIR /opt/sonatype/nexus
+
+RUN useradd -r -u 200 -m -c "nexus role account" -d /nexus-data -s /bin/false nexus
+
+VOLUME /nexus-data
+
+EXPOSE 8081
+
+RUN echo "\n" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "[program:nexus]" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "user=nexus" >> /etc/supervisor/conf.d/supervisord.conf
+RUN echo "command=java -server -XX:MaxPermSize=192m -Djava.net.preferIPv4Stack=true -Xms256m -Xmx1g -Dnexus-work=/nexus-data -Dnexus-webapp-context-path=/ -cp conf/:`(echo lib/*.jar) | sed -e 's/ /:/g'` org.sonatype.nexus.bootstrap.Launcher ./conf/jetty.xml ./conf/jetty-requestlog.xml" >> /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]  

@@ -144,6 +144,8 @@ GITLAB_EMAIL_FROM=tranphanquocnhan@gmail.com
 CASSANDRA_VERSION=2.0.9
 JNA_VERSION=4.1.0
 OPSCENTER_VERSION=5.0.0
+
+NEXUS_VERSION=2.11.1-01
  
 sed -r -e "s/\{\{DEPENDENT_VERSION\}\}/$DEPENDENT_VERSION/g" $IMAGE_NAME/Dockerfile.template > $IMAGE_NAME/Dockerfile
 
@@ -171,6 +173,8 @@ sed -i -e "s/{{CASSANDRA_VERSION}}/$CASSANDRA_VERSION/g" $IMAGE_NAME/Dockerfile
 sed -i -e "s/{{JNA_VERSION}}/$JNA_VERSION/g" $IMAGE_NAME/Dockerfile
 
 sed -i -e "s/{{OPSCENTER_VERSION}}/$OPSCENTER_VERSION/g" $IMAGE_NAME/Dockerfile
+
+sed -i -e "s/{{NEXUS_VERSION}}/$NEXUS_VERSION/g" $IMAGE_NAME/Dockerfile
 
 cat $IMAGE_NAME/Dockerfile
 
