@@ -12,7 +12,6 @@ RUN apt-get install -y supervisor
 RUN apt-get install -y inetutils-ping
 RUN apt-get install -y curl
 RUN apt-get install -y vim
-RUN apt-get install -y tmux
 RUN update-alternatives --set editor /usr/bin/vim.basic
 
 RUN mkdir -p /var/run/sshd
